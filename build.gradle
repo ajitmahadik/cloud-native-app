@@ -1,0 +1,48 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.3.1.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+	id 'com.google.cloud.tools.jib' version '1.7.0'
+}
+
+group = 'com.mahadik.example'
+version = '0.0.2-SNAPSHOT'
+sourceCompatibility = "1.9"
+
+configurations {
+	developmentOnly
+	runtimeClasspath {
+		extendsFrom developmentOnly
+	}
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+jib {
+	from {
+		image = 'openjdk:8-jre-alpine'
+	}
+	to {
+		image = 'registry-1.docker.io/ajitmahadik/spring-boot-demo'
+		tags = [version]
+	}
+	container {
+		mainClass = 'com.mahadik.example.springbootdemo.SpringBootDemoApplication'
+		ports = ['8100']
+		format = 'OCI'
+	}
+}
+targetCompatibility = JavaVersion.VERSION_1_9
